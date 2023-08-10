@@ -3,20 +3,16 @@ from flask import Flask, render_template, request, jsonify
 from bson.objectid import ObjectId
 import jwt
 from pymongo import MongoClient
+import datetime
 
 
-# SECRET_KEY = user_key
+
 app = Flask(__name__)
-client = MongoClient('sparta:test@cluster0.yxb3ggu.mongodb.net/?retryWrites=true&w=majority')
+client = MongoClient('mongodb+srv://sparta:test@cluster0.orw6l7l.mongodb.net/?retryWrites=true&w=majority')
 db = client.dbsparta
 
 # 시크릿 키 - JWT 토큰을 생성하거나 검증할 때 사용됩니다.
 SECRET_KEY = "team8key"
-
-app = Flask(__name__)
-client = MongoClient(
-    'mongodb+srv://sparta:test@cluster0.yxb3ggu.mongodb.net/?retryWrites=true&w=majority')
-db = client.dbsparta
 
 
 
