@@ -5,7 +5,6 @@ from flask import Flask, render_template, request, jsonify
 import jwt
 import datetime
 
-
 # 시크릿 키 - JWT 토큰을 생성하거나 검증할 때 사용됩니다.
 SECRET_KEY = "team8key"
 
@@ -71,16 +70,12 @@ def login_user():
         return jsonify({'msg': '로그인 실패'})
 
 
+
+#*메인화면
 @app.route('/')
 def home():
     return render_template('index.html')
 
-
-@app.route("/api/reviews", methods=["GET"])
-def reviews_get():
-    all_reviews = list(db.review.find({}, {'_id': False}))
-    print(all_reviews)
-    return jsonify({'reviews': all_reviews})
 
 
 if __name__ == '__main__':
