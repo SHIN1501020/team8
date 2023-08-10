@@ -1,5 +1,3 @@
-from bs4 import BeautifulSoup
-import requests
 from pymongo import MongoClient
 from flask import Flask, render_template, request, jsonify
 from bson.objectid import ObjectId
@@ -20,9 +18,8 @@ client = MongoClient(
     'mongodb+srv://sparta:test@cluster0.fxv5hyn.mongodb.net/?retryWrites=true&w=majority', tlsCAFile=ca)
 db = client.dbsparta
 
+
 # /register url에 POST 요청이 들어오면 아래 함수를 작동
-
-
 @app.route('/register', methods=['GET'])
 def register():
     return render_template('register.html')
@@ -75,10 +72,7 @@ def login_user():
         return jsonify({'msg': '로그인 성공', 'token': token})
     else:
         return jsonify({'msg': '로그인 실패'})
-    
-@app.route('/review_start', methods=['GET'])
-def review_start():
-    return render_template('review.html')
+
     
 @app.route("/review", methods=["POST"])
 def review_post():
@@ -105,55 +99,18 @@ def review_post():
 
     return jsonify({'msg': '저장 완료!'})
 
-@app.route("/review", methods=["GET"])
-def guestbook_get():
-    all_reviews = list(db.review.find({},{'_id':False}))
-    return jsonify({'result': all_reviews})
-
 
 @app.route('/')
 def home():
     return render_template('index.html')
 
-# @app.route("/movie", methods=["POST"])
-# def movie_post():
-
-#     sample_url = request.form['sample_url']
-#     sample_comment = request.form['sample_comment']
-#     sample_star = request.form['sample_star']
-
-#     URL = sample_url
-#     headers = {'User-Agent' : 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36'}
-#     data = requests.get(URL,headers=headers)
-#     soup = BeautifulSoup(data.text, 'html.parser')
-#     ogtitle = soup.select_one('meta[property="og:title"]')['content']
-#     ogimage = soup.select_one('meta[property="og:image"]')['content']
-#     ogdesc = soup.select_one('meta[property="og:description"]')['content']
-
-#     moive = {
-#         'title' : ogtitle,
-#         'image' : ogimage,
-#         'description' : ogdesc,
-#         'comment' : sample_comment,
-#         'star' : sample_star
-#     }
-#     db.movies2.insert_one(moive)
-
-
-#     return jsonify({'msg':'저장 완료!'})
-
-# @app.route("/movie", methods=["GET"])
-# def movie_get():
-#     all_moives = list(db.movies2.find({},{'_id':False}))
-#     return jsonify({'result': all_moives })
-
-#* 리뷰 조회
 @app.route("/api/reviews", methods=["GET"])
 def reviews_get():
     all_reviews = list(db.review.find({}))
     for a in all_reviews:
             a['_id'] = str(a['_id'])#ObjectId Class을 str로 변경
     return jsonify({'reviews': all_reviews })
+
 
 #* 리뷰 삭제
 @app.route("/api/reviews/delete", methods=["POST"])
@@ -176,18 +133,22 @@ def reviews_delete():
     else :
         return jsonify({'reviews': "삭제 권한이 없습니다." })
 
+
 #* 리뷰 id별로 수정 페이지 이동(flask 동적 라우팅)
 @app.route("/api/reviews/<id>", methods=["GET"])
 def reviews_update_page(id):
     return render_template('review_form.html', id=id)
 
+
 #* 리뷰 id별로 데이터 조회
 @app.route("/api/reviews/<id>/update_form", methods=["GET"])
 def reviews_update_form(id):
+    #ObjectId Class type -> string으로 변환
     review = db.review.find_one({'_id':ObjectId(id)})
     review['_id'] = str(review['_id'])
     return jsonify({'review': review })
 
+  
 #* 리뷰 데이터 수정(update)
 @app.route("/api/reviews/<id>/update", methods=["POST"])
 def reviews_update(id):
@@ -216,5 +177,7 @@ def reviews_update(id):
         return jsonify({'review': "수정 권한이 없습니다!" })
 
 
+
 if __name__ == '__main__':
     app.run('0.0.0.0', port=5001, debug=True)
+

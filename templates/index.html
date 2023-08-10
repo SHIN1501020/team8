@@ -53,7 +53,8 @@
         justify-content: center;
       }
 
-      .mytitle > button {
+
+      .btn-create > button {
         width: 200px;
         height: 50px;
 
@@ -71,6 +72,14 @@
       }
 
       .description {
+        margin-right: 10px;
+      }
+
+      .btn-create > button:hover {
+        border: 2px solid white;
+      }
+
+      .comment {
         color: gray;
       }
 
@@ -114,17 +123,20 @@
         margin-right: 10px;
       }
 
+
     </style>
     <script>
       $(document).ready(function () {
         document.getElementById("review_start").style.display = "none";
         listing();
       });
+
       // 스토리지에 토큰이 있으면 nav바에 있는 값들을 바꿔줘요.
       document.addEventListener("DOMContentLoaded", () => {
         if (localStorage.getItem("token")) {
           document.getElementById("account-create").innerHTML =
             '<a class="nav-link" href="#" id="logout-link">로그아웃</a>';
+
           document.getElementById("review_start").innerHTML =
             '<a class="nav-link" href="/review_start">리뷰작성</a>';
           document.getElementById("account-login").style.display = "none";
@@ -134,7 +146,7 @@
       document.addEventListener("click", function (e) {
         if (e.target.id === "logout-link") {
           localStorage.removeItem("token");
-          
+
           alert("로그아웃 되었습니다!");
           window.location.href = "/";
         }
@@ -179,42 +191,25 @@
       //* 리뷰 삭제(id값과 현재 사용자 토큰값 사용)
       function delete_review(id){
         if(confirm('삭제하시겠습니까?')){
-          let formData = new FormData();
-          formData.append("review_id", id);
-          //! 로그인 안했을 때 처리 필요
-          formData.append("review_token", localStorage.getItem("token"));
-          fetch('/api/reviews/delete', {method: "POST",body: formData,}).then((response) => response.json()).then((data) => {
-              msg = data['reviews']
-              alert(msg)
-              if(msg === "삭제 완료!"){
-                window.location.reload();
-              }              
+          //로그인 한 사람이면 실행
+          if(localStorage.getItem("token")){
+            let formData = new FormData();
+            formData.append("review_id", id);
+            
+            formData.append("review_token", localStorage.getItem("token"));
+            fetch('/api/reviews/delete', {method: "POST",body: formData,}).then((response) => response.json()).then((data) => {
+                msg = data['reviews']
+                alert(msg)
+                if(msg === "삭제 완료!"){
+                  window.location.reload();
+                }              
             });
+          }
+        } else {//로그인 안 했을 때
+          alert('로그인 후 이용 가능합니다.')
         }
       }
 
-      function posting() {
-        // let url = $('#url').val()
-        // let comment = $('#comment').val()
-        // let star = $('#star').val()
-        // let formData = new FormData();
-        // formData.append("sample_url", url);
-        // formData.append("sample_comment", comment);
-        // formData.append("sample_star", star);
-        // fetch("/movie", { method: "POST", body: formData })
-        //   .then((res) => res.json())
-        //   .then((data) => {
-        //     alert(data['msg']);
-        //     window.location.reload()
-        //   });
-      }
-
-      function open_box1() {
-        $("#post-box-1").show();
-      }
-      function close_box1() {
-        $("#post-box-1").hide();
-      }
     </script>
   </head>
 
@@ -223,6 +218,7 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
       <div class="container-fluid">
         <a class="navbar-brand" href="/">신김리 책방</a>
+
         <button
           class="navbar-toggler"
           type="button"
@@ -251,76 +247,9 @@
     </nav>
     <div class="mytitle">
       <h1>신김리 책방</h1>
-      <button onclick="open_box1()">등록하기</button>
-      <button onclick="open_box2()">검색하기</button>
-    </div>
-    <div class="mypost" id="post-box-1">
-      <div class="form-floating mb-3">
-        <input
-          id="url"
-          type="email"
-          class="form-control"
-          placeholder="name@example.com"
-        />
-        <label>제목</label>
-      </div>
-      <div class="form-floating mb-3">
-        <input
-          id="url"
-          type="email"
-          class="form-control"
-          placeholder="name@example.com"
-        />
-        <label>작가</label>
-      </div>
-      <div class="form-floating">
-        <textarea
-          id="comment"
-          class="form-control"
-          placeholder="Leave a comment here"
-        ></textarea>
-        <label for="floatingTextarea2">설명</label>
-      </div>
-      <div class="mybtns">
-        <button onclick="posting()" type="button" class="btn btn-dark">
-          기록하기
-        </button>
-        <button
-          onclick="close_box1()"
-          type="button"
-          class="btn btn-outline-dark"
-        >
-          닫기
-        </button>
-      </div>
-      <!-- <div class="input-group mb-3">
-        <label class="input-group-text" for="inputGroupSelect01">별점</label>
-        <select class="form-select" id="star">
-            <option selected>-- 선택하기 --</option>
-            <option value="1">⭐</option>
-            <option value="2">⭐⭐</option>
-            <option value="3">⭐⭐⭐</option>
-            <option value="4">⭐⭐⭐⭐</option>
-            <option value="5">⭐⭐⭐⭐⭐</option>
-        </select>
-    </div> -->
     </div>
     <div class="mycards">
       <div class="row row-cols-1 row-cols-md-4 g-4" id="cards-box">
-        <!-- <div class="col">
-          <div class="card h-100">
-            <img
-              src="https://movie-phinf.pstatic.net/20210728_221/1627440327667GyoYj_JPEG/movie_image.jpg"
-              class="card-img-top"
-            />
-            <div class="card-body">
-              <h5 class="card-title">영화 제목이 들어갑니다</h5>
-              <p class="card-text">여기에 영화에 대한 설명이 들어갑니다.</p>
-              <p>⭐⭐⭐</p>
-              <p class="mycomment">나의 한줄 평을 씁니다</p>
-            </div>
-          </div>
-        </div> -->
       </div>
     </div>
   </body>
