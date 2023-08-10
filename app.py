@@ -1,21 +1,25 @@
-# import requests
+from pymongo import MongoClient
 from flask import Flask, render_template, request, jsonify
 from bson.objectid import ObjectId
+
+import certifi
+# pymongo 에러 해결을 위해 import
+
+# 로그인에 필요한 라이브러리를 가져옵니다.
 import jwt
-from pymongo import MongoClient
 import datetime
-
-
-
-app = Flask(__name__)
-client = MongoClient('mongodb+srv://sparta:test@cluster0.orw6l7l.mongodb.net/?retryWrites=true&w=majority')
-db = client.dbsparta
 
 # 시크릿 키 - JWT 토큰을 생성하거나 검증할 때 사용됩니다.
 SECRET_KEY = "team8key"
 
+app = Flask(__name__)
+ca = certifi.where()
+client = MongoClient(
+    'mongodb+srv://sparta:test@cluster0.fxv5hyn.mongodb.net/?retryWrites=true&w=majority', tlsCAFile=ca)
+db = client.dbsparta
 
 
+# /register url에 POST 요청이 들어오면 아래 함수를 작동
 @app.route('/register', methods=['GET'])
 def register():
     return render_template('register.html')
@@ -69,15 +73,37 @@ def login_user():
     else:
         return jsonify({'msg': '로그인 실패'})
 
+    
+@app.route("/review", methods=["POST"])
+def review_post():
+    review_title_receive = request.form['review_title_give']
+    review_author_receive = request.form['review_author_give']
+    comment_receive = request.form['comment_give']
+    review_description_receive = request.form['review_description_give']
+    star_receive = request.form['star_give']
+    write_user_receive = request.form['write_user_give']
+    
+    encoded = jwt.decode(write_user_receive, SECRET_KEY, algorithms='HS256');
+    write_user = encoded['user']
+
+    doc = {
+        'title': review_title_receive,
+        'author': review_author_receive,
+        'comment' : comment_receive,
+        'description': review_description_receive,
+        'star' : star_receive,
+        'write_user' : write_user
+    }
+
+    db.review.insert_one(doc)
+
+    return jsonify({'msg': '저장 완료!'})
 
 
-#*메인화면
 @app.route('/')
 def home():
     return render_template('index.html')
 
-
-#* 전체 리뷰 조회
 @app.route("/api/reviews", methods=["GET"])
 def reviews_get():
     all_reviews = list(db.review.find({}))
@@ -122,7 +148,7 @@ def reviews_update_form(id):
     review['_id'] = str(review['_id'])
     return jsonify({'review': review })
 
-
+  
 #* 리뷰 데이터 수정(update)
 @app.route("/api/reviews/<id>/update", methods=["POST"])
 def reviews_update(id):
@@ -150,8 +176,8 @@ def reviews_update(id):
     else :
         return jsonify({'review': "수정 권한이 없습니다!" })
 
-   
 
 
 if __name__ == '__main__':
-    app.run('0.0.0.0', port=5000, debug=True)
+    app.run('0.0.0.0', port=5001, debug=True)
+
