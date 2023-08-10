@@ -70,6 +70,7 @@ def login_user():
         return jsonify({'msg': '로그인 실패'})
 
 
+
 #*메인화면
 @app.route('/')
 def home():
