@@ -36,7 +36,6 @@ def register():
 def register_user():
     # fetch를 통해 register.html에서 날라온 데이터를 user info에 저장 후  각각의 변수에 담아 검사합니다.
     user_info = request.json
-    print(user_info)
     username = user_info['username']
     password = user_info['password']
     email = user_info['email']
@@ -96,13 +95,11 @@ def login_user():
         return jsonify({'msg': '로그인 실패'})
 
 
-
 @app.route('/')
 def home():
     return render_template('index.html')
 
 
-    
 @app.route("/review", methods=["POST"])
 def review_post():
     review_title_receive = request.form['review_title_give']
@@ -128,10 +125,6 @@ def review_post():
 
     return jsonify({'msg': '저장 완료!'})
 
-
-@app.route('/')
-def home():
-    return render_template('index.html')
 
 @app.route("/api/reviews", methods=["GET"])
 def reviews_get():
