@@ -193,16 +193,22 @@
     </style>
     <script>
       $(document).ready(function () {
-        listing();
+          document.getElementById("review_start").style.display = "none";
+          listing();
       });
+      
       // 스토리지에 토큰이 있으면 nav바에 있는 값들을 바꿔줘요.
       document.addEventListener("DOMContentLoaded", () => {
         if (localStorage.getItem("token")) {
           document.getElementById("account-create").innerHTML =
             '<a class="nav-link" href="#" id="logout-link">로그아웃</a>';
+
+          document.getElementById("review_start").innerHTML =
+            '<a class="nav-link" href="/review_start">리뷰작성</a>';
           document.getElementById("account-login").style.display = "none";
         }
       });
+
 
       document.addEventListener("click", function (e) {
         if (e.target.id === "logout-link") {
@@ -237,11 +243,11 @@
                 window.location.reload()
             });
 
-            location.href = "/";
-            
-            
+            location.href = "/";  
         }
-
+        function open_box2(){
+          window.open('api')
+        }
     </script>
   </head>
 

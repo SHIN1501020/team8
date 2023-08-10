@@ -65,7 +65,7 @@ def books_post():
     doc = {'title':title_receive,'authors': author_receive,'description':description_receive,
            'comment' : comment_receive,'star':star_receive,'write_user': token_receive
     }
-    db.book.insert_one(doc)
+    db.review.insert_one(doc)
     return jsonify({'msg':'책 확인 완료'})
 
 
@@ -125,6 +125,9 @@ def review_post():
 
     return jsonify({'msg': '저장 완료!'})
 
+@app.route('/review_start', methods=['GET'])
+def review_start():
+    return render_template('review.html')
 
 @app.route("/api/reviews", methods=["GET"])
 def reviews_get():
