@@ -1,9 +1,9 @@
+
 from pymongo import MongoClient
 from flask import Flask, render_template, request, jsonify
 from bson.objectid import ObjectId
 
 import certifi
-# pymongo 에러 해결을 위해 import
 
 # 로그인에 필요한 라이브러리를 가져옵니다.
 import jwt
@@ -13,6 +13,13 @@ import datetime
 SECRET_KEY = "team8key"
 
 app = Flask(__name__)
+
+
+
+@app.route('/api',methods=['GET'])
+def api():
+    return render_template('api.html')
+
 ca = certifi.where()
 client = MongoClient(
     'mongodb+srv://sparta:test@cluster0.fxv5hyn.mongodb.net/?retryWrites=true&w=majority', tlsCAFile=ca)
@@ -25,8 +32,6 @@ def register():
     return render_template('register.html')
 
 # 회원가입시 데이터 베이스에 저장
-
-
 @app.route('/register', methods=['POST'])
 def register_user():
     # fetch를 통해 register.html에서 날라온 데이터를 user info에 저장 후  각각의 변수에 담아 검사합니다.
@@ -47,6 +52,23 @@ def register_user():
 
     db.users.insert_one(user_info)
     return jsonify({'msg': '회원가입을 축하드려요!'})
+
+
+@app.route("/api", methods=["POST"])
+def books_post():
+    title_receive = request.form['title_give']
+    author_receive = request.form['author_give']
+    description_receive = request.form['description_give']
+    comment_receive = request.form['comment_give']
+    star_receive = request.form['star_give']
+    token_receive = request.form['token_give']
+    
+    doc = {'title':title_receive,'authors': author_receive,'description':description_receive,
+           'comment' : comment_receive,'star':star_receive,'write_user': token_receive
+    }
+    db.book.insert_one(doc)
+    return jsonify({'msg':'책 확인 완료'})
+
 
 
 @app.route('/login', methods=['GET'])
@@ -72,6 +94,13 @@ def login_user():
         return jsonify({'msg': '로그인 성공', 'token': token})
     else:
         return jsonify({'msg': '로그인 실패'})
+
+
+
+@app.route('/')
+def home():
+    return render_template('index.html')
+
 
     
 @app.route("/review", methods=["POST"])
