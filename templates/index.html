@@ -53,7 +53,7 @@
         justify-content: center;
       }
 
-      .mytitle > button {
+      .btn-create > button {
         width: 200px;
         height: 50px;
 
@@ -64,13 +64,14 @@
         border: 1px solid white;
 
         margin-top: 10px;
+        margin-right: 10px;
       }
 
-      .mytitle > button:hover {
+      .btn-create > button:hover {
         border: 2px solid white;
       }
 
-      .description {
+      .comment {
         color: gray;
       }
 
@@ -103,30 +104,21 @@
         margin-right: 10px;
       }
 
+      /* 추가 */
+      .login {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-end;
+      }
+
+      .login > button {
+        margin-right: 10px;
+      }
     </style>
     <script>
       $(document).ready(function () {
         listing();
       });
-
-      
-      // 스토리지에 토큰이 있으면 nav바에 있는 값들을 바꿔줘요.
-      document.addEventListener("DOMContentLoaded", () => {
-        if (localStorage.getItem("token")) {
-          document.getElementById("account-create").innerHTML =
-            '<a class="nav-link" href="#" id="logout-link">로그아웃</a>';
-          document.getElementById("account-login").style.display = "none";
-        }
-      });
-
-      document.addEventListener("click", function (e) {
-        if (e.target.id === "logout-link") {
-          localStorage.removeItem("token");
-          alert("로그아웃 되었습니다!");
-          window.location.href = "/";
-        }
-      });
-
 
       //* 전체 목록 조회
       function listing() {
@@ -167,10 +159,11 @@
       //* 리뷰 삭제(id값과 현재 사용자 토큰값 사용)
       function delete_review(id){
         if(confirm('삭제하시겠습니까?')){
+          //로그인 한 사람이면 실행
           if(localStorage.getItem("token")){
             let formData = new FormData();
             formData.append("review_id", id);
-            //로그인 했을 때 실행
+            
             formData.append("review_token", localStorage.getItem("token"));
             fetch('/api/reviews/delete', {method: "POST",body: formData,}).then((response) => response.json()).then((data) => {
                 msg = data['reviews']
@@ -212,6 +205,9 @@
             <li class="nav-item" id="account-login">
               <a class="nav-link" href="/login">로그인</a>
             </li>
+            <li class="nav-item" id="review_start">
+              <a class="nav-link" href="/review_start">리뷰작성</a>
+          </li>
           </ul>
         </div>
       </div>
@@ -221,6 +217,7 @@
     </div>
     <div class="mycards">
       <div class="row row-cols-1 row-cols-md-4 g-4" id="cards-box">
+
       </div>
     </div>
   </body>
