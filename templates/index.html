@@ -189,24 +189,25 @@
       //* 리뷰 삭제(id값과 현재 사용자 토큰값 사용)
       function delete_review(id){
         if(confirm('삭제하시겠습니까?')){
-          //로그인 한 사람이면 실행
-          if(localStorage.getItem("token")){
-            let formData = new FormData();
-            formData.append("review_id", id);
-            
-            formData.append("review_token", localStorage.getItem("token"));
-            fetch('/api/reviews/delete', {method: "POST",body: formData,}).then((response) => response.json()).then((data) => {
-                msg = data['reviews']
-                alert(msg)
-                if(msg === "삭제 완료!"){
-                  window.location.reload();
-                }              
-            });
+            //로그인 한 사람이면 실행
+            if(localStorage.getItem("token")){
+              let formData = new FormData();
+              formData.append("review_id", id);
+              
+              formData.append("review_token", localStorage.getItem("token"));
+              fetch('/api/reviews/delete', {method: "POST",body: formData,}).then((response) => response.json()).then((data) => {
+                  msg = data['reviews']
+                  alert(msg)
+                  if(msg === "삭제 완료!"){
+                    window.location.reload();
+                  }              
+              });
+            }
+          else {//로그인 안 했을 때
+            alert('로그인 후 이용 가능합니다.')
           }
-        } else {//로그인 안 했을 때
-          alert('로그인 후 이용 가능합니다.')
         }
-      }
+      } 
 
     </script>
   </head>
