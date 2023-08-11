@@ -12,10 +12,6 @@ import datetime
 # 시크릿 키 - JWT 토큰을 생성하거나 검증할 때 사용됩니다.
 SECRET_KEY = "team8key"
 
-app = Flask(__name__)
-
-
-
 @app.route('/review_start/api',methods=['GET'])
 def api():
     return render_template('api.html')
@@ -211,7 +207,6 @@ def reviews_update(id):
          return jsonify({'review': "수정 완료!" })
     else :
         return jsonify({'review': "수정 권한이 없습니다!" })
-
 
 
 if __name__ == '__main__':
