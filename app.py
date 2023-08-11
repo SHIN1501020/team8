@@ -16,9 +16,10 @@ app = Flask(__name__)
 
 
 
-@app.route('/api',methods=['GET'])
+@app.route('/review_start/api',methods=['GET'])
 def api():
     return render_template('api.html')
+
 
 ca = certifi.where()
 client = MongoClient(
@@ -54,19 +55,29 @@ def register_user():
 
 
 @app.route("/api", methods=["POST"])
-def books_post():
-    title_receive = request.form['title_give']
-    author_receive = request.form['author_give']
-    description_receive = request.form['description_give']
-    comment_receive = request.form['comment_give']
-    star_receive = request.form['star_give']
-    token_receive = request.form['token_give']
-    
-    doc = {'title':title_receive,'authors': author_receive,'description':description_receive,
-           'comment' : comment_receive,'star':star_receive,'write_user': token_receive
+def response():
+    # 클라이언트로부터 데이터를 받아옵니다.
+    data = request.json 
+    image = data['image']
+    title = data['title']
+    author = data['author']
+    description = data['description']
+    data= {
+         'image' : image,
+         'title' : title,
+         'author' : author,
+         'description': description
     }
-    db.review.insert_one(doc)
-    return jsonify({'msg':'책 확인 완료'})
+     
+    db.review.insert_one(data)
+    return jsonify({'msg': '기록완료'})
+
+  
+    
+
+
+
+
 
 
 
@@ -205,4 +216,5 @@ def reviews_update(id):
 
 if __name__ == '__main__':
     app.run('0.0.0.0', port=5001, debug=True)
+    
 
