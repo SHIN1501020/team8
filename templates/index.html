@@ -193,7 +193,6 @@
           if(localStorage.getItem("token")){
             let formData = new FormData();
             formData.append("review_id", id);
-            
             formData.append("review_token", localStorage.getItem("token"));
             fetch('/api/reviews/delete', {method: "POST",body: formData,}).then((response) => response.json()).then((data) => {
                 msg = data['reviews']
@@ -203,10 +202,11 @@
                 }              
             });
           }
-        } else {//로그인 안 했을 때
-          alert('로그인 후 이용 가능합니다.')
+          else {//로그인 안 했을 때
+            alert('로그인 후 이용 가능합니다.')
         }
       }
+    }
 
     </script>
   </head>
