@@ -51,7 +51,7 @@
                                             <h5 class="card-title">제목 : <span>${title}</span></h5>
                                               <p class="card-text">작가: <span>${authors}</span></p>
                                               <p class="card-text2">소개: <span>${contents}</span></p>
-                                              <button onclick="posting(${i})"  type="button" class="btn btn-dark">기록하기</button>
+                                              <button type="button" onclick="posting(${i}) ">기록하기</button>
                                           </div> 
                                         </div>
                                       </div>
@@ -66,25 +66,22 @@
 
       //DB로 넘기기위해 해당 인덱스별 title, authors,description의 값을 지정
       function posting(index) {
+        var image = $('img.img-fluid.rounded-start').eq(index).attr('src');
         var title = $('.card-title span').eq(index).text();
         var author = $('.card-text span').eq(index).text();
         var description = $('.card-text2 span').eq(index).text();
-        var comment = "미작성입니다.";
-        var star = 3;
-        var token = localStorage.getItem("token");
         
-        let formData = new FormData();
-            formData.append("title_give",title);
-            formData.append("author_give",author);
-            formData.append("description_give",description);
-            formData.append("comment_give",comment);
-            formData.append("star_give",star);
-            formData.append("token_give",token);
-            
-            fetch('/api', { method: "POST", body: formData }).then((res) => res.json()).then((data) => {
-               alert(data["msg"]);
-               window.location.reload()
-            });
+        var cast = {
+          "image" :  $('img.img-fluid.rounded-start').eq(index).attr('src'),
+          "title" : $('.card-title span').eq(index).text(),
+          "author" : $('.card-text span').eq(index).text(),
+          "description" : $('.card-text2 span').eq(index).text()
+        }
+        
+        localStorage.setItem("cast", JSON.stringify(cast));
+        window.location.href = '/review_start';
+
+
       }
     </script>
 
@@ -156,7 +153,7 @@
   }
   </style>
     
-    <title>책 검색 사이트</title>
+    <title>신김리 책방</title>
 </head>
  
 <body>
